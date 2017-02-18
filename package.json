@@ -1,0 +1,40 @@
+{
+  "name": "Widgets",
+  "version": "1.0.0",
+  "description": "Simple widgets,interface elements",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Denis Volok",
+  "homepage": "https://github.com/omen-x/widgets",
+  "license": "ISC",
+  "jshintConfig": {
+    "indent": 1,
+    "esversion": 6,
+    "freeze": true,
+    "latedef": "nofunc",
+    "notypeof": true,
+    "loopfunc": true
+  },
+  "devDependencies": {
+    "browser-sync": "^2.17.5",
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.1",
+    "gulp-babel": "^6.1.2",
+    "babel-preset-latest": "^6.16.0",
+    "gulp-cache": "^0.4.5",
+    "gulp-clean-css": "^2.0.13",
+    "gulp-concat": "^2.6.0",
+    "gulp-file-include": "^1.0.0",
+    "gulp-load-plugins": "^1.4.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^3.0.0",
+    "gulp-sass-glob": "^1.0.8",
+    "gulp-uglify": "^2.0.0",
+    "node-bourbon": "^4.2.8",
+    "vinyl-ftp": "^0.5.0"
+  },
+  "dependencies": {}
+}
