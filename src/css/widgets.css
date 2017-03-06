@@ -1,23 +1,30 @@
 body {
-  padding: 50px; }
+  padding: 15% 10%; }
+
+p {
+  color: #3E3E3E; }
+
+h1, h2, h3, h4, h5, h6 {
+  color: #F4F4F4; }
 
 .accordion {
-  border: 1px solid  #5A5A5A;
-  border-top: none;
+  border: 1px solid #122CEC;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
   border-radius: 2px; }
 
 .accordion__head {
   padding: 10px 15px;
   font-size: 18px;
-  border-bottom: 1px solid;
-  border-top: 1px solid;
-  background: #BEBABA;
-  cursor: pointer;
-  transition: all .2s; }
-  .accordion__head:hover {
-    background: #DADADA; }
-  .accordion__tab.active .accordion__head {
-    background: #9E9E9E; }
+  transition: all .2s;
+  cursor: pointer; }
+  .accordion__tab:nth-child(odd) .accordion__head {
+    background: #4452DF; }
+    .accordion__tab:nth-child(odd) .accordion__head:hover {
+      background: #5a66e3; }
+    .accordion__tab:nth-child(odd) .accordion__head:active {
+      background: #2e3edb; }
+  .accordion__tab:nth-child(even) .accordion__head {
+    background: #25D0B6; }
 
 .accordion__content {
   padding: 10px 15px; }

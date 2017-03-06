@@ -1,0 +1,1 @@
+use coustructor variables in private methods

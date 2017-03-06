@@ -6,7 +6,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 // Accordion with sliding effect
 // using: jQuery
-// TODO: event for keyboard, tabindex, 
+// TODO: 
+// 	-event for keyboard
+// 	-tabindex
+// 	-option: show only one active tab or several possible
+// 	-some way to call bind class methods for use in event callbacks
 
 //------ Widget elements ------
 
@@ -21,7 +25,8 @@ var ELEMENTS = {
 var DEFAULTS = {
 	activeItem: 1, // Active item after init (0 - all hidden)
 	duration: 200, // Slide duration
-	callbacks: { // Callback for animation
+	single: true, // if true, only one tab can be active
+	callbacks: { // Callback for animation, this refers to current tab (jQuery object)
 		afterSlideDown: null,
 		afterSlideUp: null
 	}
@@ -33,7 +38,7 @@ var Accordion = function () {
 	function Accordion(element, config) {
 		_classCallCheck(this, Accordion);
 
-		this._element = $(element)[0]; // jquery help identify element with different selectors
+		this._element = $(element)[0]; // jquery help identify element with different selector types
 		this._config = this._getConfig(config);
 		this._callbacks = this._config.callbacks;
 
@@ -47,44 +52,73 @@ var Accordion = function () {
 		key: '_addEventListeners',
 		value: function _addEventListeners() {
 			var duration = this._config.duration;
-			var callback = this.afterSlideDown();
+			var single = this._config.single;
+			var callbackSlideDown = this._callbacks.afterSlideDown,
+			    callbacksSlideUp = this._callbacks.afterSlideUp;
 
 			ELEMENTS.head.on('click', function (e) {
-				ELEMENTS.content.slideUp(duration);
+				var _this = this;
 
-				if ($(this).closest(ELEMENTS.item).hasClass('active')) {
-					$(this).closest(ELEMENTS.item).removeClass('active');
-				} else {
-					ELEMENTS.item.removeClass('active');
-					$(this).closest(ELEMENTS.item).addClass('active');
-					$(this).siblings(ELEMENTS.content).stop().slideDown(duration, function () {
-						if (callback !== undefined) {
-							callback();
+				var activeTabs = ELEMENTS.content.closest(ELEMENTS.item).filter('.active'); // open tabs
+				var eTarget = $(e.target);
+				var currTab = eTarget.closest(ELEMENTS.item),
+				    // tab which was clicked
+				currContent = eTarget.siblings(ELEMENTS.content);
+
+				currTab.toggleClass('active');
+
+				// Single mod
+
+				if (single) {
+					ELEMENTS.item.not(currTab).removeClass('active');
+
+					// Slide-up content of active element
+					activeTabs.find(ELEMENTS.content).slideUp(duration, function () {
+
+						// Slide-up callback for current tab
+						if (callbacksSlideUp !== undefined) {
+							callbacksSlideUp.call($(_this).closest('.accordion__tab')); // call with current tab
 						}
 					});
+
+					// Show content of current tab if it's hidden
+					if (currTab.hasClass('active')) {
+						// condition check class after toggleClass above
+						currContent.stop().slideDown(duration, function () {
+
+							// Slide-down callback for current tab
+							if (callbackSlideDown !== undefined) {
+								callbackSlideDown.call($(_this).closest('.accordion__tab')); // call with current tab
+							}
+						});
+					}
 				}
-			});
-		}
 
-		// Callback events
+				// Multi mod
 
-	}, {
-		key: 'afterSlideDown',
-		value: function afterSlideDown() {
-			if (this._callbacks.afterSlideDown !== null) {
-				var slideDown = new CustomEvent('afterSlideDown', {
-					detail: {},
-					bubbles: true,
-					cancelable: true
-				});
-				var callback = this._callbacks.afterSlideDown.bind(this);
+				else {
+						// Show content of current tab if it's hidden
+						if (currTab.hasClass('active')) {
+							currContent.stop().slideDown(duration, function () {
 
-				this._element.addEventListener('afterSlideDown', function (e) {
-					callback();
-				});
+								// Slide-down callback for current tab
+								if (callbackSlideDown !== undefined) {
+									callbackSlideDown.call($(_this).closest('.accordion__tab')); // call with current tab
+								}
+							});
+						}
+						// Hide content of current tab if it's visible
+						else {
+								currContent.stop().slideUp(duration, function () {
 
-				return this._element.dispatchEvent.bind(this._element, slideDown);
-			}
+									// Slide-up callback for current tab
+									if (callbacksSlideUp !== undefined) {
+										callbacksSlideUp.call($(_this).closest('.accordion__tab')); // call with current tab
+									}
+								});
+							}
+					} // end multi mod
+			}); // end click event on ELEMENTS.head
 		}
 
 		//------ Private ------
@@ -104,8 +138,26 @@ var Accordion = function () {
 			var activeItem = this._config.activeItem;
 
 			ELEMENTS.item.not(':nth-child(' + activeItem + ')').find(ELEMENTS.content).hide();
-			ELEMENTS.item.eq(activeItem - 1).addClass('active');
+
+			if (activeItem !== 0) {
+				ELEMENTS.item.eq(activeItem - 1).addClass('active');
+			}
 		}
+
+		// Show tab content (slide-down)
+
+		// _showTabContent(){
+		// 	let currContent = this.currContent;
+		// 	currContent.stop().slideDown(duration, () => {
+
+		// 		// Slide-down callback for current tab
+		// 		if (callbackSlideDown !== undefined) {
+		// 			callbackSlideDown.call($(this).closest('.accordion__tab')); // call with current tab
+		// 		}
+
+		// 	});
+		// }
+
 	}]);
 
 	return Accordion;
@@ -114,12 +166,18 @@ var Accordion = function () {
 
 var acc = new Accordion('.accordion', {
 	activeItem: 0,
-	duration: 200,
+	duration: 1000,
+	single: false,
 	callbacks: {
-		afterSlideDown: afterDown
+		afterSlideDown: afterDown,
+		afterSlideUp: afterUp
 	}
 });
 
-function afterDown() {
-	console.log('slide is down');
+function afterDown(currTab) {
+	console.log('slide-down complete');
+}
+
+function afterUp(currTab) {
+	console.log('slide-up complete');
 }
