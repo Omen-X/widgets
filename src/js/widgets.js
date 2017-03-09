@@ -150,18 +150,17 @@ var options = {
 	}
 };
 
-// $('.accordion').accordion(options);
+$('.accordion').accordion(options);
 
-
-var acc = new Accordion('.accordion', {
-	activeItem: 0,
-	duration: 300,
-	single: false,
-	callbacks: {
-		afterSlideDown: afterDown,
-		afterSlideUp: afterUp
-	}
-});
+// const acc = new Accordion('.accordion', {
+// 	activeItem: 0,
+// 	duration: 300,
+// 	single: false,
+// 	callbacks: {
+// 		afterSlideDown: afterDown,
+// 		afterSlideUp: afterUp
+// 	}
+// });
 
 function afterDown() {
 	console.log('slide-down complete');

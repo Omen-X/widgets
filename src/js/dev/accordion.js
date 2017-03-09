@@ -1,11 +1,14 @@
 // Accordion with sliding effect
-// using: jQuery
+// vendors: jQuery
 // TODO: 
 // 	-event for keyboard
 // 	-tabindex
-// 	-option: show only one active tab or several possible
 // 	-some way to call bind class methods for use in event callbacks
 // 	-автоматически добавлять в классе классы элементам, элементы в дкоу вынести, в опциях нужно указыввать трлько родщителя
+// 	-multiple activeItems
+// 	-version without jQuery
+
+(function($){
 
 //------ Widget elements ------
 
@@ -21,7 +24,7 @@ const DEFAULTS = {
 	activeItem: 1,	// Active item after init (0 - all hidden)
 	duration: 200, // Slide duration
 	single: true, // if true, only one tab can be active
-	callbacks: {	// Callback for animation, this refers to current tab (jQuery object)
+	callbacks: {	// Callback for active item animation, this refers to current tab (jQuery object)
 		afterSlideDown: null,
 		afterSlideUp: null
 	}
@@ -35,9 +38,8 @@ class Accordion {
 	constructor(element, config) {
 		this._element = $(element)[0]; // jquery help identify element with different selector types
 		this._config = this._getConfig(config);
-		this._callbacks = this._config.callbacks;
 
-		this._setupConfig(this._config);
+		this._initSetup(this._config);
 		this._addEventListeners();
 	}
 
@@ -45,77 +47,56 @@ class Accordion {
 	// Events
 
 	_addEventListeners(){
-		let duration = this._config.duration;
-		let single = this._config.single;
-		let callbackSlideDown = this._callbacks.afterSlideDown,
-		callbacksSlideUp  = this._callbacks.afterSlideUp;
+		const config = this._config;
+		const toggleTabContent = this.toggleTabContent;
 
 		ELEMENTS.head.on('click', function(e){
-			let activeTabs = ELEMENTS.content.closest(ELEMENTS.item).filter('.active'); // open tabs
+			let activeTab = ELEMENTS.item.filter('.active'); // open tabs
 			let eTarget = $(e.target);
 			let currTab = eTarget.closest(ELEMENTS.item), // tab which was clicked
 			currContent = eTarget.siblings(ELEMENTS.content);
 
-			currTab.toggleClass('active');
+			toggleTabContent(config, activeTab, currTab, currContent);
+
+		}); // end click event on ELEMENTS.head
+	}
 
 
-			// Single mod
+	//------ Public ------
 
-			if (single) {
-				ELEMENTS.item.not(currTab).removeClass('active');
+	// Toggle tab content (slide-down / slide-up), with callbacks
 
-				// Slide-up content of active element
-				activeTabs.find(ELEMENTS.content).slideUp(duration, () => {
+	toggleTabContent(config, activeTab, currTab, currContent){
+		let active = activeTab.index(currTab) == -1 ? false : true;	// whether currTab open or no
 
-					// Slide-up callback for current tab
-					if (callbacksSlideUp !== undefined) {
-						callbacksSlideUp.call($(this).closest('.accordion__tab')); // call with current tab
-					}
-				});
+		currTab.toggleClass('active');
 
-				// Show content of current tab if it's hidden
-				if (currTab.hasClass('active')) {  // condition check class after toggleClass above
-					currContent.stop().slideDown(duration, () => {
+		// Single mod
+		if (config.single) {
+			ELEMENTS.item.not(currTab).removeClass('active');
 
-						// Slide-down callback for current tab
-						if (callbackSlideDown !== undefined) {
-							callbackSlideDown.call($(this).closest('.accordion__tab')); // call with current tab
-						}
+			if (!active) {
+				activeTab.find(ELEMENTS.content).stop().slideToggle(config.duration);
+			}
 
-					});
+		}
+
+		currContent.stop().slideToggle(config.duration, () => {
+
+			// Slide callbacks
+			if (active) {
+				if (config.callbacks.afterSlideUp !== undefined) {
+					config.callbacks.afterSlideUp.call($(this).closest(ELEMENTS.item)); // call with current tab
+				}
+			}
+			else {
+				if (config.callbacks.afterSlideDown !== undefined) {
+					config.callbacks.afterSlideDown.call($(this).closest(ELEMENTS.item)); // call with current tab
 				}
 			}
 
+		});
 
-			// Multi mod
-
-			else {
-				// Show content of current tab if it's hidden
-				if (currTab.hasClass('active')) {
-					currContent.stop().slideDown(duration, () => {
-
-						// Slide-down callback for current tab
-						if (callbackSlideDown !== undefined) {
-							callbackSlideDown.call($(this).closest('.accordion__tab')); // call with current tab
-						}
-
-					});
-				}
-				// Hide content of current tab if it's visible
-				else {
-					currContent.stop().slideUp(duration, () => {
-
-						// Slide-up callback for current tab
-						if (callbacksSlideUp !== undefined) {
-							callbacksSlideUp.call($(this).closest('.accordion__tab')); // call with current tab
-						}
-
-					});
-
-				}
-			} // end multi mod
-
-		}); // end click event on ELEMENTS.head
 	}
 
 
@@ -128,7 +109,7 @@ class Accordion {
 
 	// Initial setup
 
-	_setupConfig(config){
+	_initSetup(){
 		let activeItem = this._config.activeItem;
 
 		ELEMENTS.item.not(`:nth-child(${activeItem})`).find(ELEMENTS.content).hide();
@@ -138,40 +119,47 @@ class Accordion {
 		}
 	}
 
-	// Show tab content (slide-down)
-
-	// _showTabContent(){
-	// 	let currContent = this.currContent;
-	// 	currContent.stop().slideDown(duration, () => {
-
-	// 		// Slide-down callback for current tab
-	// 		if (callbackSlideDown !== undefined) {
-	// 			callbackSlideDown.call($(this).closest('.accordion__tab')); // call with current tab
-	// 		}
-
-	// 	});
-	// }
 
 } // end Accordion
 
 
+$.fn.accordion = function(options) {
+	return this.each(function(){
+		new Accordion(this, options);
+	});
+};
 
-const acc = new Accordion('.accordion', {
+
+}(jQuery));
+
+
+const options = {
 	activeItem: 0,
-	duration: 1000,
-	single: false,
+	duration: 300,
+	single: true,
 	callbacks: {
 		afterSlideDown: afterDown,
 		afterSlideUp: afterUp
 	}
-});
+};
+
+$('.accordion').accordion(options);
 
 
+// const acc = new Accordion('.accordion', {
+// 	activeItem: 0,
+// 	duration: 300,
+// 	single: false,
+// 	callbacks: {
+// 		afterSlideDown: afterDown,
+// 		afterSlideUp: afterUp
+// 	}
+// });
 
-function afterDown(currTab){
+function afterDown(){
 	console.log('slide-down complete');
 }
 
-function afterUp(currTab) {
+function afterUp() {
 	console.log('slide-up complete');
 }
