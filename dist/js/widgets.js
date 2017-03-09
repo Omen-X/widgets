@@ -5,121 +5,167 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 // Accordion with sliding effect
-// using: jQuery
-// TODO: event for keyboard, tabindex, 
+// vendors: jQuery
+// TODO: 
+// 	-event for keyboard
+// 	-tabindex
+// 	-some way to call bind class methods for use in event callbacks
+// 	-автоматически добавлять в классе классы элементам, элементы в дкоу вынести, в опциях нужно указыввать трлько родщителя
+// 	-multiple activeItems
+// 	-version without jQuery
 
-//------ Widget elements ------
+(function ($) {
 
-var ELEMENTS = {
-	item: $('.accordion__tab'),
-	head: $('.accordion__head'),
-	content: $('.accordion__content')
-};
+	//------ Widget elements ------
 
-//------ Initial config ------
+	var ELEMENTS = {
+		item: $('.accordion__tab'),
+		head: $('.accordion__head'),
+		content: $('.accordion__content')
+	};
 
-var DEFAULTS = {
-	activeItem: 1, // Active item after init (0 - all hidden)
-	duration: 200, // Slide duration
-	callbacks: { // Callback for animation
-		afterSlideDown: null,
-		afterSlideUp: null
-	}
-};
+	//------ Initial config ------
 
-//------ Main Class ------
+	var DEFAULTS = {
+		activeItem: 1, // Active item after init (0 - all hidden)
+		duration: 200, // Slide duration
+		single: true, // if true, only one tab can be active
+		callbacks: { // Callback for active item animation, this refers to current tab (jQuery object)
+			afterSlideDown: null,
+			afterSlideUp: null
+		}
+	};
 
-var Accordion = function () {
-	function Accordion(element, config) {
-		_classCallCheck(this, Accordion);
+	//------ Main Class ------
 
-		this._element = $(element)[0]; // jquery help identify element with different selectors
-		this._config = this._getConfig(config);
-		this._callbacks = this._config.callbacks;
+	var Accordion = function () {
+		function Accordion(element, config) {
+			_classCallCheck(this, Accordion);
 
-		this._setupConfig(this._config);
-		this._addEventListeners();
-	}
+			this._element = $(element)[0]; // jquery help identify element with different selector types
+			this._config = this._getConfig(config);
 
-	// Events
-
-	_createClass(Accordion, [{
-		key: '_addEventListeners',
-		value: function _addEventListeners() {
-			var duration = this._config.duration;
-			var callback = this.afterSlideDown();
-
-			ELEMENTS.head.on('click', function (e) {
-				ELEMENTS.content.slideUp(duration);
-
-				if ($(this).closest(ELEMENTS.item).hasClass('active')) {
-					$(this).closest(ELEMENTS.item).removeClass('active');
-				} else {
-					ELEMENTS.item.removeClass('active');
-					$(this).closest(ELEMENTS.item).addClass('active');
-					$(this).siblings(ELEMENTS.content).stop().slideDown(duration, function () {
-						if (callback !== undefined) {
-							callback();
-						}
-					});
-				}
-			});
+			this._initSetup(this._config);
+			this._addEventListeners();
 		}
 
-		// Callback events
+		// Events
 
-	}, {
-		key: 'afterSlideDown',
-		value: function afterSlideDown() {
-			if (this._callbacks.afterSlideDown !== null) {
-				var slideDown = new CustomEvent('afterSlideDown', {
-					detail: {},
-					bubbles: true,
-					cancelable: true
-				});
-				var callback = this._callbacks.afterSlideDown.bind(this);
+		_createClass(Accordion, [{
+			key: '_addEventListeners',
+			value: function _addEventListeners() {
+				var config = this._config;
+				var toggleTabContent = this.toggleTabContent;
 
-				this._element.addEventListener('afterSlideDown', function (e) {
-					callback();
-				});
+				ELEMENTS.head.on('click', function (e) {
+					var activeTab = ELEMENTS.item.filter('.active'); // open tabs
+					var eTarget = $(e.target);
+					var currTab = eTarget.closest(ELEMENTS.item),
+					    // tab which was clicked
+					currContent = eTarget.siblings(ELEMENTS.content);
 
-				return this._element.dispatchEvent.bind(this._element, slideDown);
+					toggleTabContent(config, activeTab, currTab, currContent);
+				}); // end click event on ELEMENTS.head
 			}
-		}
 
-		//------ Private ------
+			//------ Public ------
 
-	}, {
-		key: '_getConfig',
-		value: function _getConfig(config) {
-			config = $.extend({}, DEFAULTS, config);
-			return config;
-		}
+			// Toggle tab content (slide-down / slide-up), with callbacks
 
-		// Initial setup
+		}, {
+			key: 'toggleTabContent',
+			value: function toggleTabContent(config, activeTab, currTab, currContent) {
+				var _this = this;
 
-	}, {
-		key: '_setupConfig',
-		value: function _setupConfig(config) {
-			var activeItem = this._config.activeItem;
+				var active = activeTab.index(currTab) == -1 ? false : true; // whether currTab open or no
 
-			ELEMENTS.item.not(':nth-child(' + activeItem + ')').find(ELEMENTS.content).hide();
-			ELEMENTS.item.eq(activeItem - 1).addClass('active');
-		}
-	}]);
+				currTab.toggleClass('active');
 
-	return Accordion;
-}(); // end Accordion
+				// Single mod
+				if (config.single) {
+					ELEMENTS.item.not(currTab).removeClass('active');
+
+					if (!active) {
+						activeTab.find(ELEMENTS.content).stop().slideToggle(config.duration);
+					}
+				}
+
+				currContent.stop().slideToggle(config.duration, function () {
+
+					// Slide callbacks
+					if (active) {
+						if (config.callbacks.afterSlideUp !== undefined) {
+							config.callbacks.afterSlideUp.call($(_this).closest(ELEMENTS.item)); // call with current tab
+						}
+					} else {
+						if (config.callbacks.afterSlideDown !== undefined) {
+							config.callbacks.afterSlideDown.call($(_this).closest(ELEMENTS.item)); // call with current tab
+						}
+					}
+				});
+			}
+
+			//------ Private ------
+
+		}, {
+			key: '_getConfig',
+			value: function _getConfig(config) {
+				config = $.extend({}, DEFAULTS, config);
+				return config;
+			}
+
+			// Initial setup
+
+		}, {
+			key: '_initSetup',
+			value: function _initSetup() {
+				var activeItem = this._config.activeItem;
+
+				ELEMENTS.item.not(':nth-child(' + activeItem + ')').find(ELEMENTS.content).hide();
+
+				if (activeItem !== 0) {
+					ELEMENTS.item.eq(activeItem - 1).addClass('active');
+				}
+			}
+		}]);
+
+		return Accordion;
+	}(); // end Accordion
 
 
-var acc = new Accordion('.accordion', {
+	$.fn.accordion = function (options) {
+		return this.each(function () {
+			new Accordion(this, options);
+		});
+	};
+})(jQuery);
+
+var options = {
 	activeItem: 0,
-	duration: 200,
+	duration: 300,
+	single: true,
 	callbacks: {
-		afterSlideDown: afterDown
+		afterSlideDown: afterDown,
+		afterSlideUp: afterUp
 	}
-});
+};
+
+$('.accordion').accordion(options);
+
+// const acc = new Accordion('.accordion', {
+// 	activeItem: 0,
+// 	duration: 300,
+// 	single: false,
+// 	callbacks: {
+// 		afterSlideDown: afterDown,
+// 		afterSlideUp: afterUp
+// 	}
+// });
 
 function afterDown() {
-	console.log('slide is down');
+	console.log('slide-down complete');
+}
+
+function afterUp() {
+	console.log('slide-up complete');
 }

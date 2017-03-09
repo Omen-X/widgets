@@ -17,6 +17,32 @@
     "notypeof": true,
     "loopfunc": true
   },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "node": true,
+      "es6": true,
+      "mocha": true,
+      "jquery": true
+    },
+    "globals": {
+      "jquery": true
+    },
+    "parser": "babel-eslint",
+    "plugins": [
+      "react"
+    ],
+    "ecmaFeatures": {
+      "jsx": true,
+      "experimentalObjectRestSpread": true
+    },
+    "extends": "eslint:recommended",
+    "rules": {
+      "no-unused-vars": "warn",
+      "semi": "warn",
+      "no-console": 0
+    }
+  },
   "devDependencies": {
     "browser-sync": "^2.17.5",
     "del": "^2.2.2",

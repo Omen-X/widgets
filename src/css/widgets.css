@@ -16,15 +16,15 @@ h1, h2, h3, h4, h5, h6 {
   padding: 10px 15px;
   font-size: 18px;
   transition: all .2s;
-  cursor: pointer; }
-  .accordion__tab:nth-child(odd) .accordion__head {
-    background: #4452DF; }
-    .accordion__tab:nth-child(odd) .accordion__head:hover {
-      background: #5a66e3; }
-    .accordion__tab:nth-child(odd) .accordion__head:active {
-      background: #2e3edb; }
-  .accordion__tab:nth-child(even) .accordion__head {
-    background: #25D0B6; }
+  cursor: pointer;
+  border-bottom: 1px solid  #1197FE;
+  background: #4452DF; }
+  .accordion__tab:last-child .accordion__head {
+    border-bottom: none; }
+  .accordion__head:hover {
+    background: #5a66e3; }
+  .accordion__head:active {
+    background: #2e3edb; }
 
 .accordion__content {
   padding: 10px 15px; }
