@@ -1,3 +1,7 @@
 use coustructor variables in private methods
 
 widgets must be easy for customize and independet on html-structure
+
+template for widgets
+
+option in gulpfile for including or not jquery

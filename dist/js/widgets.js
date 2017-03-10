@@ -10,13 +10,23 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 // 	-event for keyboard
 // 	-tabindex
 // 	-some way to call bind class methods for use in event callbacks
-// 	-автоматически добавлять в классе классы элементам, элементы в дкоу вынести, в опциях нужно указыввать трлько родщителя
-// 	-multiple activeItems
 // 	-version without jQuery
 
 (function ($) {
 
 	//------ Widget elements ------
+
+
+	var CLASSES = {
+		item: 'accordion__tab',
+		head: 'accordion__head',
+		content: 'accordion__content'
+	};
+
+	// Init classes
+	$('.accordion').children().addClass(CLASSES.item).each(function () {
+		$(this).children().first().addClass(CLASSES.head).end().last().addClass(CLASSES.content);
+	});
 
 	var ELEMENTS = {
 		item: $('.accordion__tab'),
@@ -45,7 +55,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 			this._element = $(element)[0]; // jquery help identify element with different selector types
 			this._config = this._getConfig(config);
 
-			this._initSetup(this._config);
+			this._initSetup();
 			this._addEventListeners();
 		}
 
@@ -94,11 +104,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 					// Slide callbacks
 					if (active) {
-						if (config.callbacks.afterSlideUp !== undefined) {
+						if (config.callbacks.afterSlideUp != undefined) {
 							config.callbacks.afterSlideUp.call($(_this).closest(ELEMENTS.item)); // call with current tab
 						}
 					} else {
-						if (config.callbacks.afterSlideDown !== undefined) {
+						if (config.callbacks.afterSlideDown != undefined) {
 							config.callbacks.afterSlideDown.call($(_this).closest(ELEMENTS.item)); // call with current tab
 						}
 					}
@@ -143,29 +153,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var options = {
 	activeItem: 0,
 	duration: 300,
-	single: true,
-	callbacks: {
-		afterSlideDown: afterDown,
-		afterSlideUp: afterUp
-	}
+	single: true
 };
 
 $('.accordion').accordion(options);
 
-// const acc = new Accordion('.accordion', {
-// 	activeItem: 0,
-// 	duration: 300,
-// 	single: false,
-// 	callbacks: {
-// 		afterSlideDown: afterDown,
-// 		afterSlideUp: afterUp
-// 	}
-// });
+// function afterDown(){
+// 	console.log('slide-down complete');
+// }
 
-function afterDown() {
-	console.log('slide-down complete');
-}
-
-function afterUp() {
-	console.log('slide-up complete');
-}
+// function afterUp() {
+// 	console.log('slide-up complete');
+// }
