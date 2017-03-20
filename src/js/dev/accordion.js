@@ -28,13 +28,6 @@ $('.accordion').children().addClass(CLASSES.item)
 					});
 
 
-const ELEMENTS = {
-	item: $('.accordion__tab'),
-	head: $('.accordion__head'),
-	content: $('.accordion__content')
-};
-
-
 //------ Initial config ------
 
 const DEFAULTS = {
@@ -53,11 +46,17 @@ const DEFAULTS = {
 class Accordion {
 
 	constructor(element, config) {
-		this._element = $(element)[0]; // jquery help identify element with different selector types
+		this._element = $(element); // jquery help identify element with different selector types
 		this._config = this._getConfig(config);
 
+		this.ELEMENTS = {
+			item: $('.accordion__tab', this._element),
+			head: $('.accordion__head', this._element),
+			content: $('.accordion__content', this._element)
+		};
 		this._initSetup();
 		this._addEventListeners();
+
 	}
 
 
@@ -66,14 +65,15 @@ class Accordion {
 	_addEventListeners(){
 		const config = this._config;
 		const toggleTabContent = this.toggleTabContent;
+		const ELEMENTS = this.ELEMENTS;
 
-		ELEMENTS.head.on('click', function(e){
+		this.ELEMENTS.head.on('click', function(e){
 			let activeTab = ELEMENTS.item.filter('.active'); // open tabs
 			let eTarget = $(e.target);
 			let currTab = eTarget.closest(ELEMENTS.item), // tab which was clicked
 			currContent = eTarget.siblings(ELEMENTS.content);
 
-			toggleTabContent(config, activeTab, currTab, currContent);
+			toggleTabContent(config, activeTab, currTab, currContent, ELEMENTS);
 
 		}); // end click event on ELEMENTS.head
 	}
@@ -83,7 +83,7 @@ class Accordion {
 
 	// Toggle tab content (slide-down / slide-up), with callbacks
 
-	toggleTabContent(config, activeTab, currTab, currContent){
+	toggleTabContent(config, activeTab, currTab, currContent, ELEMENTS){
 		let active = activeTab.index(currTab) == -1 ? false : true;	// whether currTab open or no
 
 		currTab.toggleClass('active');
@@ -129,10 +129,10 @@ class Accordion {
 	_initSetup(){
 		let activeItem = this._config.activeItem;
 
-		ELEMENTS.item.not(`:nth-child(${activeItem})`).find(ELEMENTS.content).hide();
+		this.ELEMENTS.item.not(`:nth-child(${activeItem})`).find(this.ELEMENTS.content).hide();
 
 		if (activeItem !== 0) {
-			ELEMENTS.item.eq(activeItem - 1).addClass('active');
+			this.ELEMENTS.item.eq(activeItem - 1).addClass('active');
 		}
 	}
 
@@ -150,23 +150,3 @@ $.fn.accordion = function(options) {
 }(jQuery));
 
 
-const options = {
-	activeItem: 0,
-	duration: 300,
-	single: true,
-	// callbacks: {
-	// 	afterSlideDown: afterDown,
-	// 	afterSlideUp: afterUp
-	// }
-};
-
-$('.accordion').accordion(options);
-
-
-// function afterDown(){
-// 	console.log('slide-down complete');
-// }
-
-// function afterUp() {
-// 	console.log('slide-up complete');
-// }

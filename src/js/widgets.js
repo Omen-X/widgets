@@ -28,12 +28,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 		$(this).children().first().addClass(CLASSES.head).end().last().addClass(CLASSES.content);
 	});
 
-	var ELEMENTS = {
-		item: $('.accordion__tab'),
-		head: $('.accordion__head'),
-		content: $('.accordion__content')
-	};
-
 	//------ Initial config ------
 
 	var DEFAULTS = {
@@ -52,9 +46,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 		function Accordion(element, config) {
 			_classCallCheck(this, Accordion);
 
-			this._element = $(element)[0]; // jquery help identify element with different selector types
+			this._element = $(element); // jquery help identify element with different selector types
 			this._config = this._getConfig(config);
 
+			this.ELEMENTS = {
+				item: $('.accordion__tab', this._element),
+				head: $('.accordion__head', this._element),
+				content: $('.accordion__content', this._element)
+			};
 			this._initSetup();
 			this._addEventListeners();
 		}
@@ -66,15 +65,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 			value: function _addEventListeners() {
 				var config = this._config;
 				var toggleTabContent = this.toggleTabContent;
+				var ELEMENTS = this.ELEMENTS;
 
-				ELEMENTS.head.on('click', function (e) {
+				this.ELEMENTS.head.on('click', function (e) {
 					var activeTab = ELEMENTS.item.filter('.active'); // open tabs
 					var eTarget = $(e.target);
 					var currTab = eTarget.closest(ELEMENTS.item),
 					    // tab which was clicked
 					currContent = eTarget.siblings(ELEMENTS.content);
 
-					toggleTabContent(config, activeTab, currTab, currContent);
+					toggleTabContent(config, activeTab, currTab, currContent, ELEMENTS);
 				}); // end click event on ELEMENTS.head
 			}
 
@@ -84,7 +84,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 		}, {
 			key: 'toggleTabContent',
-			value: function toggleTabContent(config, activeTab, currTab, currContent) {
+			value: function toggleTabContent(config, activeTab, currTab, currContent, ELEMENTS) {
 				var _this = this;
 
 				var active = activeTab.index(currTab) == -1 ? false : true; // whether currTab open or no
@@ -131,10 +131,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 			value: function _initSetup() {
 				var activeItem = this._config.activeItem;
 
-				ELEMENTS.item.not(':nth-child(' + activeItem + ')').find(ELEMENTS.content).hide();
+				this.ELEMENTS.item.not(':nth-child(' + activeItem + ')').find(this.ELEMENTS.content).hide();
 
 				if (activeItem !== 0) {
-					ELEMENTS.item.eq(activeItem - 1).addClass('active');
+					this.ELEMENTS.item.eq(activeItem - 1).addClass('active');
 				}
 			}
 		}]);
@@ -149,19 +149,3 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 		});
 	};
 })(jQuery);
-
-var options = {
-	activeItem: 0,
-	duration: 300,
-	single: true
-};
-
-$('.accordion').accordion(options);
-
-// function afterDown(){
-// 	console.log('slide-down complete');
-// }
-
-// function afterUp() {
-// 	console.log('slide-up complete');
-// }

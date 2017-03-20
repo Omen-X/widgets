@@ -1,32 +1,26 @@
 @import "bourbon"
+@import "./components/vars"
 
 
-$c-accent: #4452DF
-$c-accent_d: darken($c-accent, 5%)
-$c-accent_l: lighten($c-accent, 5%)
 
-$c-accent-2: #3E89DD
-$c-accent-2_d: darken($c-accent-2, 5%)
-$c-accent-2_l: lighten($c-accent-2, 5%)
 
-$c-text: #3E3E3E
-$c-title: #F4F4F4
+.element-title
+	text-align: center
+	font-size: rem(30)
+	color: #000
 
-$c-border: #122CEC
+.element-mod-title
+	margin-top: rem(50)
+	margin-bottom: rem(25)
+	font-size: rem(20)
+	color: #000
 
-body
-	padding: 15% 10%
-
-p
-	color: $c-text
-
-h1,h2,h3,h4,h5,h6
-	color: $c-title
 
 //________ STYLES ________
 
 
 .accordion
+	max-width: 600px
 	border: 1px solid $c-border
 	box-shadow: 0 0 10px rgba(#000, .7)
 	border-radius: 2px
