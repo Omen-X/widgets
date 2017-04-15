@@ -22,9 +22,11 @@ gulp.task('pl', () => console.log($));
 const WIDGETS = {
 	css: [
 		'src/sass/accordion.sass', // accordion
+		'src/sass/lighbox.sass', // lighbox
 	],
 	js: [
 		'src/js/dev/accordion.js',	// accordion
+		'src/js/dev/lightbox.js',	// lightbox
 	]
 };
 

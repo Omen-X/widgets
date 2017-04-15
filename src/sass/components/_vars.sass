@@ -13,7 +13,7 @@ $w-min: 320px
 // Fonts
 
 $f-main: 'OpenSans', 'Helvetica', 'Arial', sans-serif
-$fs-main: 16px
+$fs-main: 16
 
 
 // Colors
@@ -133,25 +133,13 @@ $c-placeholder_invalid: #FC5E5E
 	@return ($pix/$parent)*1em
 
 
+@function rem($pix)
+	@return ($pix / $fs-main)*1rem
+
+
 
 //________ SUPPORT CLASSES ________
 
-	// Max width for content (container for content)
-.content-w
-	max-width: $w-content_max
-	min-width: $w-min
-	margin: 0 auto
-
-	// paddings when content have full width of viewport
-	@media only screen and (max-width : $w-content_padding)
-		padding-left: 15px
-		padding-right: 15px
-
-.hidden
-	display: none !important
-
-.invisible
-	opacity: 0 !important
 
 .clearfix
 	&:before
@@ -164,45 +152,13 @@ $c-placeholder_invalid: #FC5E5E
 		clear: both
 
 	// Parent of inline-blocks, fix space beetween them
-.ic-t
-	font-size: 0
 
-	> *
-		vertical-align: top
-		font-size: $fs-main
 
-.ic-m
-	font-size: 0
+p
+   color: $c-text
 
-	> *
-		vertical-align: middle
-		font-size: $fs-main
+h1,h2,h3,h4,h5,h6
+   color: $c-title
 
-	// Negative paddings for bootstrap grid container, add to parent of 'container'
-.np
-	margin-left: -15px
-	margin-right: -15px
-
-	// Responsive video container,
-	// aspect ratio - 16:9 
-.vc
-	position: relative
-	padding-bottom: 56.25%
-	height: 0
-
-	iframe
-		position: absolute
-		top: 0
-		left: 0
-		width: 100%
-		height: 100%
-
-	// Vertical align in container
-.va
-	position: relative
-
-	&:after
-		display: inline-block
-		vertical-align: middle
-		width: 0
-		height: 100%
+.accordion-sect
+	display: none

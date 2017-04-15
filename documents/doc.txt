@@ -1,3 +1,4 @@
 template for widgets
 
 option in gulpfile for including or not jquery
+-determine the location of styles;
