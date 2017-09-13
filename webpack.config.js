@@ -15,7 +15,12 @@ const imageminPngquant = require('imagemin-pngquant');
 const { ifProduction, ifDevelopment } = getIfUtils(process.env.NODE_ENV);
 
 const config = {
-  entry: './src/index.js',
+  entry: [
+    // 'core-js/fn/object/assign',
+    // 'core-js/fn/array/from',
+    'babel-polyfill',
+    './src/index.js',
+  ],
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.js',
@@ -114,7 +119,7 @@ const config = {
           sound: false,
         });
       },
-    })
+    }),
   ],
 };
 
@@ -148,7 +153,7 @@ if (process.env.NODE_ENV === 'production') {
     port: 3000,
     publicPath: '/',
     compress: true,
-    stats: 'minimal'
+    stats: 'minimal',
     // stats: {
     //   assetsSort: 'size',
     //   assets: false,

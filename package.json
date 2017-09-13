@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
-    "start":
-      "cross-env NODE_ENV=development nodemon --watch webpack.config.js --exec webpack-dev-server"
+    "start": "cross-env NODE_ENV=development nodemon --watch webpack.config.js --exec webpack-dev-server"
   },
   "repository": {
     "type": "git",
@@ -22,7 +21,10 @@
       "es6": true
     },
     "parser": "babel-eslint",
-    "extends": ["airbnb-base", "prettier"],
+    "extends": [
+      "airbnb-base",
+      "prettier"
+    ],
     "rules": {
       "no-unused-vars": "warn",
       "semi": "warn",
@@ -39,7 +41,10 @@
       "array-callback-return": 0
     }
   },
-  "browserslist": ["last 3 versions", "not ie < 10"],
+  "browserslist": [
+    "last 3 versions",
+    "not ie < 10"
+  ],
   "postcss": {
     "plugins": {
       "postcss-import": {},
@@ -55,6 +60,7 @@
     "babel-loader": "^7.0.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.2.1",
+    "babel-preset-stage-0": "^6.24.1",
     "clean-webpack-plugin": "^0.1.16",
     "cross-env": "^5.0.1",
     "css-loader": "^0.28.4",
