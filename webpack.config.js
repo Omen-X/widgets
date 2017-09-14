@@ -16,9 +16,8 @@ const { ifProduction, ifDevelopment } = getIfUtils(process.env.NODE_ENV);
 
 const config = {
   entry: [
-    // 'core-js/fn/object/assign',
-    // 'core-js/fn/array/from',
-    'babel-polyfill',
+    'core-js/fn/object/assign',
+    'core-js/fn/array/from',
     './src/index.js',
   ],
   output: {
@@ -28,6 +27,9 @@ const config = {
   devtool: ifDevelopment('source-map'),
   resolve: {
     extensions: ['.js', '.jsx'],
+    alias: {
+      sassVars: path.resolve(__dirname, 'src/common/_vars.sass')
+    }
   },
   module: {
     rules: [

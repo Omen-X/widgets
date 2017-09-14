@@ -1,4 +1,7 @@
+@import '~sassVars'
+
 .select-wrap
+  position: relative
   max-width: 500px
 
   *
@@ -12,13 +15,82 @@
     width: 0
     height: 0
 
+.select-wrap_opened
+
+  .select-options
+    visibility: visible
+    z-index: 0
+    transform: translateY(0)
+    opacity: 1
+
+  .select-option
+    transform: translateY(0)
+
+  .select-option-active
+    border-radius: 3px 3px 0 0
+    &:after
+      transform: translateY(-50%) rotate(-90deg)
+
 .select-options
+  position: absolute
+  left: 0
+  right: 0
+  top: 40px
+  z-index: -1
+  overflow: hidden
+  visibility: hidden
+  opacity: 0
   list-style: none
-  border: 1px solid
+  border-radius: 0 0 3px 3px
+  background: $c-bg
+  transform: translateY(-15px)
+  transition: all .2s ease-in-out
 
 .select-option
   padding: 8px 12px
-  border-bottom: 1px solid
+  border-bottom: 1px solid $c-border
+  border-left: 1px solid $c-border
+  border-right: 1px solid $c-border
+  transition: background .2s
+  cursor: pointer
+  transform: translateY(-8px)
+  transition: transform .2s ease-in-out, background .15s, border-color .15s
+
+  &:hover
+    background: $c-bg_d
+    border-left-color: $c-bg_d
+    border-right-color: $c-bg_d
 
   &:last-child
-    border-bottom: 0
+    // border-bottom: 0
+
+.select-option-active
+  position: relative
+  z-index: 1
+  height: 40px
+  border-radius: 3px 3px 3px 3px
+  line-height: 40px
+  padding: 0 15px
+  background: $c-accent
+  cursor: pointer
+  color: #FFF
+  transition: background .2s
+
+  &:hover
+    background: $c-accent_l
+
+  &:after
+    // content: '\0203A'
+    content: ''
+    position: absolute
+    right: 12px
+    top: 50%
+    width: 10px
+    height: 10px
+    background-size: contain
+    transform: translateY(-50%) rotate(90deg)
+    background-image: url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE2cHgiIGhlaWdodD0iMTZweCIgdmlld0JveD0iMCAwIDQ1MS44NDYgNDUxLjg0NyIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDUxLjg0NiA0NTEuODQ3OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPHBhdGggZD0iTTM0NS40NDEsMjQ4LjI5MkwxNTEuMTU0LDQ0Mi41NzNjLTEyLjM1OSwxMi4zNjUtMzIuMzk3LDEyLjM2NS00NC43NSwwYy0xMi4zNTQtMTIuMzU0LTEyLjM1NC0zMi4zOTEsMC00NC43NDQgICBMMjc4LjMxOCwyMjUuOTJMMTA2LjQwOSw1NC4wMTdjLTEyLjM1NC0xMi4zNTktMTIuMzU0LTMyLjM5NCwwLTQ0Ljc0OGMxMi4zNTQtMTIuMzU5LDMyLjM5MS0xMi4zNTksNDQuNzUsMGwxOTQuMjg3LDE5NC4yODQgICBjNi4xNzcsNi4xOCw5LjI2MiwxNC4yNzEsOS4yNjIsMjIuMzY2QzM1NC43MDgsMjM0LjAxOCwzNTEuNjE3LDI0Mi4xMTUsMzQ1LjQ0MSwyNDguMjkyeiIgZmlsbD0iI0ZGRkZGRiIvPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+Cjwvc3ZnPgo=)
+    transition: transform .2s
+
+
+

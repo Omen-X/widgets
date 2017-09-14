@@ -9,4 +9,18 @@ body
   padding: 50px 15px
 
   & > *
-    flex: 1 1 auto
+    flex-grow: 1
+
+.block
+  display: flex
+  width: 500px
+  flex-flow: column nowrap
+  justify-content: space-between
+  border: 3px solid
+  padding: 5px
+  height: 200px
+
+  div
+    border: 1px solid
+    max-height: calc(50% - 20px)
+    flex: 1
