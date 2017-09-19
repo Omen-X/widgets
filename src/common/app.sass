@@ -1,7 +1,7 @@
 @import '~sassVars'
 
 body
-  font-family: 'Exo 2', sans-serif
+  font-family: $f-main
 
 .section
   display: flex
@@ -14,7 +14,7 @@ body
   border-bottom: 1px solid $c-accent
 
   & > *
-    flex-grow: 1
+    // flex-grow: 1
 
 .section-title
   margin-top: 0
@@ -34,3 +34,26 @@ body
     border: 1px solid
     max-height: calc(50% - 20px)
     flex: 1
+
+.buttons
+  margin-bottom: 20px
+
+.btn-main
+  display: inline-block
+  align-self: flex-start
+  min-width: 150px
+  border: none
+  border-radius: 3px
+  margin-right: 25px
+  padding: 10px 20px
+  background: $c-accent-2
+  text-transform: uppercase
+  font-weight: 500
+  font-size: 16px
+  font-family: $f-second
+  color: #FFF
+  cursor: pointer
+  transition: background .2s
+
+  &:hover
+    background: $c-accent-2_l

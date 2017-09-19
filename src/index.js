@@ -1,7 +1,6 @@
 import './common/app.sass';
 
 import Select from './elements/select';
+import './elements/drag-drop';
 
-// ========>> SELECT <<========
-
-const select = new Select('#select', {});
+// const select = new Select('#select', {});
