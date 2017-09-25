@@ -1,0 +1,31 @@
+@import '~sassVars'
+
+.drag-drop
+  position: relative
+  list-style: none
+  max-width: 500px
+  padding-left: 0
+  padding: 10px
+  border-radius: 3px
+  background: $c-bg
+  border: 1px solid  $c-border
+  transition: all .3s
+
+  li
+    height: 40px
+    line-height: 40px
+    margin-bottom: 8px
+    padding: 0 15px
+    border-radius: 3px
+    background: $c-accent
+    // cursor: pointer // enables in editing mode
+    color: #FFF
+
+    &:last-child
+      margin-bottom: 0
+
+    &.dragged
+      position: relative
+      z-index: 5
+      left: 0
+
